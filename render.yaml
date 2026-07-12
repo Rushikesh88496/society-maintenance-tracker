@@ -7,12 +7,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: JWT_SECRET
-        scope: secret
-      - key: SMTP_USER
-        scope: secret
-      - key: SMTP_PASS
-        scope: secret
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
