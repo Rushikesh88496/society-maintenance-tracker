@@ -3,7 +3,7 @@ services:
     name: society-maintenance-api
     runtime: node
     buildCommand: cd backend && npm install
-    startCommand: node server.js
+    startCommand: cd backend && node server.js
     envVars:
       - key: NODE_ENV
         value: production
