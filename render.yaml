@@ -1,0 +1,30 @@
+services:
+  - type: web
+    name: society-maintenance-api
+    runtime: node
+    buildCommand: cd backend && npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        scope: secret
+      - key: SMTP_USER
+        scope: secret
+      - key: SMTP_PASS
+        scope: secret
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: "587"
+      - key: PORT
+        value: "5000"
+      - key: DATABASE_PATH
+        value: /var/data/society.db
+      - key: UPLOADS_PATH
+        value: /var/data/uploads
+      - key: CORS_ORIGIN
+        value: ""
+    persistedDirs:
+      - path: /var/data
+        description: "SQLite database and uploads"
