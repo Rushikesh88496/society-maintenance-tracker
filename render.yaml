@@ -19,12 +19,5 @@ services:
         value: "587"
       - key: PORT
         value: "5000"
-      - key: DATABASE_PATH
-        value: /var/data/society.db
-      - key: UPLOADS_PATH
-        value: /var/data/uploads
       - key: CORS_ORIGIN
         value: ""
-    persistedDirs:
-      - path: /var/data
-        description: "SQLite database and uploads"
