@@ -18,6 +18,21 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
 
+// ==================== ENV VALIDATION ====================
+const isProduction = process.env.NODE_ENV === 'production';
+
+if (isProduction) {
+  if (!process.env.JWT_SECRET || process.env.JWT_SECRET === 'your-secret-key-change-in-production') {
+    console.error('FATAL: JWT_SECRET is not set or using default value. Set JWT_SECRET in environment variables.');
+    process.exit(1);
+  }
+  if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+    console.warn('WARNING: SMTP_USER/SMTP_PASS not set. Emails will not be delivered.');
+  }
+} else {
+  console.log('Running in development mode');
+}
+
 // Middleware
 app.use(cors({
   origin: process.env.CORS_ORIGIN ? process.env.CORS_ORIGIN.split(',') : '*',
@@ -27,11 +42,21 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Initialize database
-initializeDatabase();
+try {
+  initializeDatabase();
+} catch (err) {
+  console.error('FATAL: Database initialization failed:', err.message);
+  process.exit(1);
+}
 
 // Ensure uploads directory exists
-if (!fs.existsSync(path.join(__dirname, 'uploads'))) {
-  fs.mkdirSync(path.join(__dirname, 'uploads'), { recursive: true });
+try {
+  const uploadsDir = path.join(__dirname, 'uploads');
+  if (!fs.existsSync(uploadsDir)) {
+    fs.mkdirSync(uploadsDir, { recursive: true });
+  }
+} catch (err) {
+  console.error('WARNING: Could not create uploads directory:', err.message);
 }
 
 // Multer configuration for photo uploads
@@ -69,10 +94,9 @@ try {
 
   transporter.verify((error) => {
     if (error) {
-      console.error("SMTP Error:");
-      console.error(error);
+      console.warn('SMTP verification failed — emails will not be delivered:', error.message);
     } else {
-      console.log("✓ Email transporter ready");
+      console.log('✓ Email transporter ready');
     }
   });
 } catch (err) {
@@ -2027,7 +2051,45 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// ==================== GLOBAL ERROR HANDLERS ====================
+
+// 404 handler — must be AFTER all routes
+app.use((req, res) => {
+  res.status(404).json({ error: `Cannot ${req.method} ${req.originalUrl}` });
+});
+
+// Global Express error handler — must be LAST middleware
+app.use((err, req, res, _next) => {
+  console.error('Unhandled error:', err.message);
+
+  if (err.type === 'entity.parse.failed') {
+    return res.status(400).json({ error: 'Invalid JSON in request body' });
+  }
+
+  if (err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'File too large. Maximum size is 5MB.' });
+  }
+
+  if (err.code === 'LIMIT_UNEXPECTED_FILE') {
+    return res.status(400).json({ error: 'Unexpected file field' });
+  }
+
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// ==================== PROCESS ERROR HANDLERS ====================
+
+process.on('unhandledRejection', (reason) => {
+  console.error('Unhandled Rejection:', reason);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('Uncaught Exception:', err.message);
+  // Give the server time to finish pending requests before exiting
+  setTimeout(() => process.exit(1), 1000);
+});
+
 // Start server
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🚀 Server running on http://localhost:${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
