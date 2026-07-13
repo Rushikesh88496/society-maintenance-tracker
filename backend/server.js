@@ -1998,9 +1998,33 @@ app.delete('/api/documents/:id', authenticateToken, adminOnly, (req, res) => {
   }
 });
 
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    application: 'Society Maintenance Tracker Backend',
+    status: 'Running',
+    version: '1.0.0',
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'Server running' });
+  let dbStatus = 'connected';
+  try {
+    db.prepare('SELECT 1').get();
+  } catch {
+    dbStatus = 'disconnected';
+  }
+  res.json({
+    success: true,
+    status: 'healthy',
+    database: dbStatus,
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Start server
