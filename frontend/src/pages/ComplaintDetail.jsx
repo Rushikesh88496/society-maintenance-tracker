@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   ChevronLeft,
   AlertCircle,
@@ -60,8 +60,7 @@ export default function ComplaintDetail() {
   // SSE for live updates
   useEffect(() => {
     if (!complaint) return;
-    const apiBase = import.meta.env.VITE_API_URL || '';
-    const eventSource = new EventSource(`${apiBase}/api/complaints/${id}/stream`);
+    const eventSource = new EventSource(`${api.defaults.baseURL}/api/complaints/${id}/stream`);
     eventSource.onmessage = () => {
       fetchComplaint();
     };
@@ -70,7 +69,7 @@ export default function ComplaintDetail() {
 
   const fetchComplaint = async () => {
     try {
-      const res = await axios.get(`/api/complaints/${id}`);
+      const res = await api.get(`/api/complaints/${id}`);
       setComplaint(res.data);
       setUpdateData({ status: res.data.status, priority: res.data.priority, note: '' });
     } catch (err) {
@@ -82,7 +81,7 @@ export default function ComplaintDetail() {
 
   const fetchStaff = async () => {
     try {
-      const res = await axios.get(`/api/complaints/${id}/available-staff`);
+      const res = await api.get(`/api/complaints/${id}/available-staff`);
       setStaffList(res.data);
     } catch (err) {
       console.error('Error fetching staff:', err);
@@ -94,7 +93,7 @@ export default function ComplaintDetail() {
     e.preventDefault();
     setUpdating(true);
     try {
-      await axios.put(`/api/complaints/${id}/status`, {
+      await api.put(`/api/complaints/${id}/status`, {
         status: updateData.status,
         priority: updateData.priority,
         note: updateData.note,
@@ -113,7 +112,7 @@ export default function ComplaintDetail() {
     e.preventDefault();
     setUpdating(true);
     try {
-      await axios.put(`/api/complaints/${id}/status`, {
+      await api.put(`/api/complaints/${id}/status`, {
         assigned_to: assignData.assigned_to || null,
         expected_completion: assignData.expected_completion || null,
         note: assignData.note || null,
@@ -131,7 +130,7 @@ export default function ComplaintDetail() {
   const handleConfirm = async (confirmed) => {
     setConfirmLoading(true);
     try {
-      await axios.put(`/api/complaints/${id}/confirm`, {
+      await api.put(`/api/complaints/${id}/confirm`, {
         confirmed,
         note: confirmNote || undefined,
       });

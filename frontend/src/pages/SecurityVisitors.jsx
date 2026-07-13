@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import {
   Search,
   Calendar,
@@ -40,7 +40,7 @@ export default function SecurityVisitors() {
 
   const fetchVisitors = async () => {
     try {
-      const res = await axios.get('/api/visitors');
+      const res = await api.get('/api/visitors');
       setVisitors(res.data);
     } catch (err) {
       console.error(err);
@@ -51,21 +51,21 @@ export default function SecurityVisitors() {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get('/api/visitors/stats/summary');
+      const res = await api.get('/api/visitors/stats/summary');
       setStats(res.data);
     } catch (err) { console.error(err); }
   };
 
   const handleCheckIn = async () => {
     try {
-      await axios.put(`/api/visitors/${actionModal.id}/checkin`, { note: actionNote || 'Checked in by security' });
+      await api.put(`/api/visitors/${actionModal.id}/checkin`, { note: actionNote || 'Checked in by security' });
       setActionModal(null); setActionNote(''); fetchVisitors(); fetchStats();
     } catch (err) { alert(err.response?.data?.error || 'Failed'); }
   };
 
   const handleCheckOut = async () => {
     try {
-      await axios.put(`/api/visitors/${actionModal.id}/checkout`, { note: actionNote || 'Checked out by security' });
+      await api.put(`/api/visitors/${actionModal.id}/checkout`, { note: actionNote || 'Checked out by security' });
       setActionModal(null); setActionNote(''); fetchVisitors(); fetchStats();
     } catch (err) { alert(err.response?.data?.error || 'Failed'); }
   };

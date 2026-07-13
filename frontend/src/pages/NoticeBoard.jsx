@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { Pin, Plus, Trash2 } from 'lucide-react';
 import Layout from '../components/Layout';
 import EmptyState from '../components/EmptyState';
@@ -20,7 +20,7 @@ export default function NoticeBoard() {
 
   const fetchNotices = async () => {
     try {
-      const res = await axios.get('/api/notices');
+      const res = await api.get('/api/notices');
       setNotices(res.data);
     } catch (err) {
       console.error('Error fetching notices:', err);
@@ -33,7 +33,7 @@ export default function NoticeBoard() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post('/api/notices', formData);
+      await api.post('/api/notices', formData);
       setFormData({ title: '', description: '', is_important: false });
       setShowForm(false);
       fetchNotices();
@@ -47,7 +47,7 @@ export default function NoticeBoard() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this notice?')) {
       try {
-        await axios.delete(`/api/notices/${id}`);
+        await api.delete(`/api/notices/${id}`);
         fetchNotices();
       } catch (err) {
         console.error('Error deleting notice:', err);

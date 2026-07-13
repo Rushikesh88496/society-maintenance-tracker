@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   Users,
   Search,
@@ -46,7 +46,7 @@ export default function AdminResidents() {
       if (filters.status) params.append('status', filters.status);
       if (filters.sort) params.append('sort', filters.sort);
 
-      const res = await axios.get(`/api/admin/residents?${params}`);
+      const res = await api.get(`/api/admin/residents?${params}`);
       setResidents(res.data);
     } catch (err) {
       console.error('Error fetching residents:', err);
@@ -88,7 +88,7 @@ export default function AdminResidents() {
     setEditError('');
     setEditLoading(true);
     try {
-      await axios.put(`/api/admin/residents/${editModal.resident.id}`, editForm);
+      await api.put(`/api/admin/residents/${editModal.resident.id}`, editForm);
       setEditModal({ open: false, resident: null });
       fetchResidents();
     } catch (err) {
@@ -103,7 +103,7 @@ export default function AdminResidents() {
     const action = resident.is_active ? 'disable' : 'enable';
     if (!window.confirm(`Are you sure you want to ${action} ${resident.name}?`)) return;
     try {
-      await axios.put(`/api/admin/residents/${resident.id}/toggle-status`);
+      await api.put(`/api/admin/residents/${resident.id}/toggle-status`);
       fetchResidents();
     } catch (err) {
       console.error('Error toggling status:', err);
@@ -114,7 +114,7 @@ export default function AdminResidents() {
   const handleDelete = async (resident) => {
     if (!window.confirm(`Permanently delete ${resident.name}? This will also delete all their complaints.`)) return;
     try {
-      await axios.delete(`/api/admin/residents/${resident.id}`);
+      await api.delete(`/api/admin/residents/${resident.id}`);
       fetchResidents();
     } catch (err) {
       console.error('Error deleting resident:', err);

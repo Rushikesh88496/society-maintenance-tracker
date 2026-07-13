@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   ChevronLeft,
   Download,
@@ -25,7 +25,7 @@ export default function ReceiptPage() {
 
   const fetchBill = async () => {
     try {
-      const res = await axios.get(`/api/bills/${id}`);
+      const res = await api.get(`/api/bills/${id}`);
       setBill(res.data);
     } catch (err) {
       console.error('Error fetching bill:', err);

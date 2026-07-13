@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   AlertCircle,
   Clock,
@@ -57,7 +57,7 @@ export default function ResidentDashboard() {
 
   const fetchComplaints = async () => {
     try {
-      const res = await axios.get('/api/complaints');
+      const res = await api.get('/api/complaints');
       setComplaints(res.data);
       setLastUpdated(new Date());
     } catch (err) {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   ChevronLeft,
   Mail,
@@ -26,7 +26,7 @@ export default function AdminResidentProfile() {
 
   const fetchResident = async () => {
     try {
-      const res = await axios.get(`/api/admin/residents/${id}`);
+      const res = await api.get(`/api/admin/residents/${id}`);
       setResident(res.data);
     } catch (err) {
       console.error('Error fetching resident:', err);
@@ -39,7 +39,7 @@ export default function AdminResidentProfile() {
     const action = resident.is_active ? 'disable' : 'enable';
     if (!window.confirm(`Are you sure you want to ${action} ${resident.name}?`)) return;
     try {
-      const res = await axios.put(`/api/admin/residents/${resident.id}/toggle-status`);
+      const res = await api.put(`/api/admin/residents/${resident.id}/toggle-status`);
       setResident((prev) => ({ ...prev, is_active: res.data.is_active }));
     } catch (err) {
       console.error('Error toggling status:', err);

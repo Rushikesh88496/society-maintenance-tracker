@@ -1,6 +1,6 @@
 import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import axios from 'axios';
+import api from './services/api';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import ResidentDashboard from './pages/ResidentDashboard';
@@ -25,8 +25,6 @@ import { AuthContext } from './context/AuthContext';
 
 const AdminAnalytics = lazy(() => import('./pages/AdminAnalytics'));
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL || '';
-
 function App() {
   const [auth, setAuth] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,14 +32,14 @@ function App() {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      axios.get('/api/auth/me')
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      api.get('/api/auth/me')
         .then(res => {
           setAuth({ token, user: res.data });
         })
         .catch(() => {
           localStorage.removeItem('token');
-          delete axios.defaults.headers.common['Authorization'];
+          delete api.defaults.headers.common['Authorization'];
           setAuth(null);
         })
         .finally(() => setLoading(false));
@@ -52,13 +50,13 @@ function App() {
 
   const handleLogin = (token, user) => {
     localStorage.setItem('token', token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     setAuth({ token, user });
   };
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
     setAuth(null);
   };
 

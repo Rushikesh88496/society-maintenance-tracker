@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import {
   UserPlus,
   Search,
@@ -53,7 +53,7 @@ export default function ResidentVisitors() {
 
   const fetchVisitors = async () => {
     try {
-      const res = await axios.get('/api/visitors');
+      const res = await api.get('/api/visitors');
       setVisitors(res.data);
     } catch (err) {
       console.error('Error fetching visitors:', err);
@@ -66,7 +66,7 @@ export default function ResidentVisitors() {
     e.preventDefault();
     setSubmitting(true);
     try {
-      await axios.post('/api/visitors', form);
+      await api.post('/api/visitors', form);
       setShowRegister(false);
       setForm({ name: '', phone: '', vehicle_number: '', purpose: '', visit_date: new Date().toISOString().split('T')[0], expected_time: '' });
       fetchVisitors();
@@ -79,7 +79,7 @@ export default function ResidentVisitors() {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/api/visitors/${id}`);
+      await api.delete(`/api/visitors/${id}`);
       setDeleteConfirm(null);
       setSelectedVisitor(null);
       fetchVisitors();

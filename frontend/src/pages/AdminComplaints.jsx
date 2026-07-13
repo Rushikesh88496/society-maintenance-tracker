@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { Search, SlidersHorizontal, X, AlertCircle, UserPlus } from 'lucide-react';
 import Layout from '../components/Layout';
 import EmptyState from '../components/EmptyState';
@@ -39,7 +39,7 @@ export default function AdminComplaints() {
       if (filters.sort === 'overdue') params.append('sort', 'overdue');
       if (filters.sort === 'priority') params.append('sort', 'priority');
 
-      const res = await axios.get(`/api/complaints?${params}`);
+      const res = await api.get(`/api/complaints?${params}`);
       setComplaints(res.data);
     } catch (err) {
       console.error('Error fetching complaints:', err);

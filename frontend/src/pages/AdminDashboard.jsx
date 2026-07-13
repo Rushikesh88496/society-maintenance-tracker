@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   AlertCircle,
   Clock,
@@ -26,7 +26,7 @@ export default function AdminDashboard() {
 
   const fetchDashboard = async () => {
     try {
-      const res = await axios.get('/api/dashboard');
+      const res = await api.get('/api/dashboard');
       setDashboard(res.data);
     } catch (err) {
       console.error('Error fetching dashboard:', err);

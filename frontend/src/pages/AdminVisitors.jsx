@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import {
   Search,
   Calendar,
@@ -39,7 +39,7 @@ export default function AdminVisitors() {
 
   const fetchVisitors = async () => {
     try {
-      const res = await axios.get('/api/visitors');
+      const res = await api.get('/api/visitors');
       setVisitors(res.data);
     } catch (err) {
       console.error('Error fetching visitors:', err);
@@ -50,7 +50,7 @@ export default function AdminVisitors() {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get('/api/visitors/stats/summary');
+      const res = await api.get('/api/visitors/stats/summary');
       setStats(res.data);
     } catch (err) {
       console.error(err);
@@ -59,14 +59,14 @@ export default function AdminVisitors() {
 
   const handleApprove = async () => {
     try {
-      await axios.put(`/api/visitors/${actionModal.id}/approve`, { note: actionNote });
+      await api.put(`/api/visitors/${actionModal.id}/approve`, { note: actionNote });
       setActionModal(null); setActionNote(''); fetchVisitors(); fetchStats();
     } catch (err) { alert(err.response?.data?.error || 'Failed'); }
   };
 
   const handleReject = async () => {
     try {
-      await axios.put(`/api/visitors/${actionModal.id}/reject`, { reason: actionNote || 'Rejected by admin' });
+      await api.put(`/api/visitors/${actionModal.id}/reject`, { reason: actionNote || 'Rejected by admin' });
       setActionModal(null); setActionNote(''); fetchVisitors(); fetchStats();
     } catch (err) { alert(err.response?.data?.error || 'Failed'); }
   };

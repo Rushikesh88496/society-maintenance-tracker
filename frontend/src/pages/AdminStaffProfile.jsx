@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   ChevronLeft,
   Mail,
@@ -34,7 +34,7 @@ export default function AdminStaffProfile() {
 
   const fetchMember = async () => {
     try {
-      const res = await axios.get(`/api/admin/staff/${id}`);
+      const res = await api.get(`/api/admin/staff/${id}`);
       setMember(res.data);
     } catch (err) {
       console.error('Error fetching staff member:', err);
@@ -47,7 +47,7 @@ export default function AdminStaffProfile() {
     const action = member.is_active ? 'disable' : 'enable';
     if (!window.confirm(`Are you sure you want to ${action} ${member.name}?`)) return;
     try {
-      const res = await axios.put(`/api/admin/staff/${member.id}/toggle-status`);
+      const res = await api.put(`/api/admin/staff/${member.id}/toggle-status`);
       setMember((prev) => ({ ...prev, is_active: res.data.is_active }));
     } catch (err) {
       console.error('Error toggling status:', err);

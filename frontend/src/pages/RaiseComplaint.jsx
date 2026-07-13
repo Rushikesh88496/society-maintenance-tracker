@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import { Upload, AlertCircle, CheckCircle, X } from 'lucide-react';
 import Layout from '../components/Layout';
 
@@ -69,7 +69,7 @@ export default function RaiseComplaint() {
       data.append('description', formData.description);
       if (formData.photo) data.append('photo', formData.photo);
 
-      await axios.post('/api/complaints', data, {
+      await api.post('/api/complaints', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import { Upload, Search, File, FileImage, FileText, Download, Trash2, X, Filter, FolderOpen } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useAuth } from '../context/AuthContext';
@@ -45,7 +45,7 @@ export default function DocumentCenter() {
       const params = {};
       if (search) params.search = search;
       if (category) params.category = category;
-      const res = await axios.get('/api/documents', { params });
+      const res = await api.get('/api/documents', { params });
       setDocuments(res.data);
     } catch (e) {
       console.error(e);
@@ -68,7 +68,7 @@ export default function DocumentCenter() {
       formData.append('file', file);
       formData.append('category', uploadCategory);
       formData.append('description', description);
-      await axios.post('/api/documents', formData, {
+      await api.post('/api/documents', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       setShowUpload(false);
@@ -86,7 +86,7 @@ export default function DocumentCenter() {
     if (!window.confirm('Delete this document?')) return;
     setDeleting(id);
     try {
-      await axios.delete(`/api/documents/${id}`);
+      await api.delete(`/api/documents/${id}`);
       fetchDocs();
     } catch (e) {
       console.error(e);

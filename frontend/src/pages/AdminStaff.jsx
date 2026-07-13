@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   Wrench,
   Search,
@@ -65,7 +65,7 @@ export default function AdminStaff() {
       if (filters.status) params.append('status', filters.status);
       if (filters.sort) params.append('sort', filters.sort);
 
-      const res = await axios.get(`/api/admin/staff?${params}`);
+      const res = await api.get(`/api/admin/staff?${params}`);
       setStaff(res.data);
     } catch (err) {
       console.error('Error fetching staff:', err);
@@ -96,7 +96,7 @@ export default function AdminStaff() {
     setAddError('');
     setAddLoading(true);
     try {
-      await axios.post('/api/admin/staff', addForm);
+      await api.post('/api/admin/staff', addForm);
       setAddModal(false);
       setAddForm(EMPTY_FORM);
       fetchStaff();
@@ -124,7 +124,7 @@ export default function AdminStaff() {
     setEditError('');
     setEditLoading(true);
     try {
-      await axios.put(`/api/admin/staff/${editModal.member.id}`, editForm);
+      await api.put(`/api/admin/staff/${editModal.member.id}`, editForm);
       setEditModal({ open: false, member: null });
       fetchStaff();
     } catch (err) {
@@ -139,7 +139,7 @@ export default function AdminStaff() {
     const action = member.is_active ? 'disable' : 'enable';
     if (!window.confirm(`Are you sure you want to ${action} ${member.name}?`)) return;
     try {
-      await axios.put(`/api/admin/staff/${member.id}/toggle-status`);
+      await api.put(`/api/admin/staff/${member.id}/toggle-status`);
       fetchStaff();
     } catch (err) {
       console.error('Error toggling status:', err);
@@ -150,7 +150,7 @@ export default function AdminStaff() {
   const handleDelete = async (member) => {
     if (!window.confirm(`Permanently delete ${member.name}? Their assigned complaints will be unassigned.`)) return;
     try {
-      await axios.delete(`/api/admin/staff/${member.id}`);
+      await api.delete(`/api/admin/staff/${member.id}`);
       fetchStaff();
     } catch (err) {
       console.error('Error deleting staff:', err);

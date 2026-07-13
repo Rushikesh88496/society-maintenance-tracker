@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../services/api';
 import {
   Download,
   FileText,
@@ -37,12 +37,12 @@ export default function AdminAnalytics() {
     setLoading(true);
     try {
       const [sumRes, monthRes, catRes, priRes, resRes, growRes] = await Promise.all([
-        axios.get('/api/analytics/summary'),
-        axios.get('/api/analytics/monthly-complaints'),
-        axios.get('/api/analytics/category-breakdown'),
-        axios.get('/api/analytics/priority-breakdown'),
-        axios.get('/api/analytics/resolution-time'),
-        axios.get('/api/analytics/resident-growth'),
+        api.get('/api/analytics/summary'),
+        api.get('/api/analytics/monthly-complaints'),
+        api.get('/api/analytics/category-breakdown'),
+        api.get('/api/analytics/priority-breakdown'),
+        api.get('/api/analytics/resolution-time'),
+        api.get('/api/analytics/resident-growth'),
       ]);
       setSummary(sumRes.data);
       setMonthly(monthRes.data);

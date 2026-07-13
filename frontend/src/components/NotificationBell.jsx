@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Bell, CheckCheck, X, AlertTriangle, FileText, CreditCard, UserCheck, Info } from 'lucide-react';
-import axios from 'axios';
+import api from '../services/api';
 
 const iconMap = {
   complaint: AlertTriangle,
@@ -32,7 +32,7 @@ export default function NotificationBell() {
 
   const fetchUnreadCount = useCallback(async () => {
     try {
-      const { data } = await axios.get('/api/notifications/unread-count');
+      const { data } = await api.get('/api/notifications/unread-count');
       setUnreadCount(data.count);
     } catch (e) { /* silent */ }
   }, []);
@@ -40,7 +40,7 @@ export default function NotificationBell() {
   const fetchNotifications = useCallback(async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get('/api/notifications');
+      const { data } = await api.get('/api/notifications');
       setNotifications(data.notifications);
       setUnreadCount(data.unreadCount);
     } catch (e) { /* silent */ }
@@ -67,7 +67,7 @@ export default function NotificationBell() {
 
   const markAsRead = async (id) => {
     try {
-      await axios.put(`/api/notifications/${id}/read`);
+      await api.put(`/api/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, is_read: 1 } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch (e) { /* silent */ }
@@ -75,7 +75,7 @@ export default function NotificationBell() {
 
   const markAllRead = async () => {
     try {
-      await axios.put('/api/notifications/read-all');
+      await api.put('/api/notifications/read-all');
       setNotifications(prev => prev.map(n => ({ ...n, is_read: 1 })));
       setUnreadCount(0);
     } catch (e) { /* silent */ }

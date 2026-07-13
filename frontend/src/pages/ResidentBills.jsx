@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   DollarSign,
   CheckCircle,
@@ -29,7 +29,7 @@ export default function ResidentBills() {
 
   const fetchBills = async () => {
     try {
-      const res = await axios.get('/api/bills');
+      const res = await api.get('/api/bills');
       setBills(res.data);
     } catch (err) {
       console.error('Error fetching bills:', err);

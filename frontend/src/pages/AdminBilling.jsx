@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
+import api from '../services/api';
 import {
   Search,
   SlidersHorizontal,
@@ -70,7 +70,7 @@ export default function AdminBilling() {
       if (filters.status) params.append('status', filters.status);
       if (filters.period) params.append('period', filters.period);
       if (filters.sort) params.append('sort', filters.sort);
-      const res = await axios.get(`/api/bills?${params}`);
+      const res = await api.get(`/api/bills?${params}`);
       setBills(res.data);
     } catch (err) {
       console.error('Error fetching bills:', err);
@@ -81,14 +81,14 @@ export default function AdminBilling() {
 
   const fetchStats = async () => {
     try {
-      const res = await axios.get('/api/bills/stats/summary');
+      const res = await api.get('/api/bills/stats/summary');
       setStats(res.data);
     } catch (err) { /* ignore */ }
   };
 
   const fetchResidents = async () => {
     try {
-      const res = await axios.get('/api/admin/residents');
+      const res = await api.get('/api/admin/residents');
       setResidents(res.data);
     } catch (err) { /* ignore */ }
   };
@@ -115,7 +115,7 @@ export default function AdminBilling() {
         setGenerateLoading(false);
         return;
       }
-      await axios.post('/api/bills', payload);
+      await api.post('/api/bills', payload);
       setGenerateModal(false);
       setGenerateForm(EMPTY_FORM);
       fetchBills();
@@ -143,7 +143,7 @@ export default function AdminBilling() {
     setEditError('');
     setEditLoading(true);
     try {
-      await axios.put(`/api/bills/${editModal.bill.id}`, { ...editForm, amount: parseFloat(editForm.amount) });
+      await api.put(`/api/bills/${editModal.bill.id}`, { ...editForm, amount: parseFloat(editForm.amount) });
       setEditModal({ open: false, bill: null });
       fetchBills();
     } catch (err) {
@@ -163,7 +163,7 @@ export default function AdminBilling() {
     e.preventDefault();
     setPayLoading(true);
     try {
-      await axios.put(`/api/bills/${payModal.bill.id}/pay`, { ...payForm, paid_amount: parseFloat(payForm.paid_amount) });
+      await api.put(`/api/bills/${payModal.bill.id}/pay`, { ...payForm, paid_amount: parseFloat(payForm.paid_amount) });
       setPayModal({ open: false, bill: null });
       fetchBills();
       fetchStats();
@@ -178,7 +178,7 @@ export default function AdminBilling() {
   const handleCancel = async (bill) => {
     if (!window.confirm(`Cancel bill "${bill.title}"?`)) return;
     try {
-      await axios.put(`/api/bills/${bill.id}/cancel`);
+      await api.put(`/api/bills/${bill.id}/cancel`);
       fetchBills();
       fetchStats();
     } catch (err) {
@@ -190,7 +190,7 @@ export default function AdminBilling() {
   const handleDelete = async (bill) => {
     if (!window.confirm(`Permanently delete bill "${bill.title}"?`)) return;
     try {
-      await axios.delete(`/api/bills/${bill.id}`);
+      await api.delete(`/api/bills/${bill.id}`);
       fetchBills();
       fetchStats();
     } catch (err) {
@@ -203,8 +203,7 @@ export default function AdminBilling() {
     const params = new URLSearchParams();
     if (filters.status) params.append('status', filters.status);
     if (filters.period) params.append('period', filters.period);
-    const apiBase = import.meta.env.VITE_API_URL || '';
-    window.open(`${apiBase}/api/bills/export/csv?${params}`, '_blank');
+    window.open(`/api/bills/export/csv?${params}`, '_blank');
   };
 
   return (
