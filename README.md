@@ -4,14 +4,26 @@ A full-stack web application for apartment society management — complaint trac
 
 ---
 
-## Tech Stack
+## Live Demo
+
+🔗 **Frontend:** [https://society-maintenance-tracker-frontend.onrender.com](https://society-maintenance-tracker-frontend.onrender.com)
+
+🔗 **Backend API:** [https://society-maintenance-tracker-1-nu0k.onrender.com](https://society-maintenance-tracker-1-nu0k.onrender.com)
+
+**Default Admin Login:**
+- Email: `admin@society.com`
+- Password: `admin123`
+
+> Note: The backend is on Render's free tier, so the first request may take ~30 seconds while the service spins up.
+
+---
 
 | Layer      | Technology                                                                 |
 |------------|---------------------------------------------------------------------------|
 | Backend    | Node.js, Express, better-sqlite3, JWT (jsonwebtoken), bcryptjs, Nodemailer, Multer |
 | Frontend   | React 18, Vite, React Router v6, Tailwind CSS, Recharts, Lucide Icons, Axios |
 | Export     | jspdf, jspdf-autotable, xlsx (SheetJS)                                    |
-| Deployment | Render.com (render.yaml), persistent SQLite + uploads via `/var/data`     |
+| Deployment | Render.com — Backend (Node.js Web Service) + Frontend (Static Site)     |
 
 ---
 
