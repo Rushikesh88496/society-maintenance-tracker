@@ -6,7 +6,7 @@ A full-stack web application for apartment society management — complaint trac
 
 ## Live Demo
 
-🔗 **Frontend:** [https://society-maintenance-tracker-frontend.onrender.com](https://society-maintenance-tracker-frontend.onrender.com)
+🔗 **Frontend:** [https://society-maintenance-tracker-2-p6y5.onrender.com](https://society-maintenance-tracker-2-p6y5.onrender.com)
 
 🔗 **Backend API:** [https://society-maintenance-tracker-1-nu0k.onrender.com](https://society-maintenance-tracker-1-nu0k.onrender.com)
 
